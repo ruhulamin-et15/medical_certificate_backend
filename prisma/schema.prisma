@@ -1,0 +1,865 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  firstName    String
+  lastName     String?
+  email        String     @unique
+  phone        String?
+  password     String
+  addressOne   String?
+  addressTwo   String?
+  city         String?
+  postalCode   String?
+  state        String?
+  country      String?    @default("United Kingdom")
+  registeredBy String?
+  availableAt  String?
+  acceptedBy   String?
+  role         UserRole   @default(USER)
+  status       UserStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@map("users")
+}
+
+model Coupon {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  codeKey   String   @unique
+  discount  Int
+  isActive  Boolean  @default(false)
+  valid     DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("coupon")
+}
+
+model Payment {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  paymentId       String   @unique
+  orderId         String
+  userId          String?
+  productName     String
+  totalAmount     Int
+  currency        String
+  customerDetails Json
+  paymentMethod   String
+  mode            String
+  paymentStatus   String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("payment")
+}
+
+model Certificate {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  certificateId   String
+  firstName       String
+  lastName        String
+  email           String
+  referenceNumber String   @unique
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("certificate")
+}
+
+model SickNoteRequest {
+  id                           String          @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                    String
+  lastName                     String?
+  email                        String
+  mobileNumber                 String
+  dateOfBirth                  DateTime
+  gender                       String
+  preexistingConditions        Boolean
+  preexistingConditionsDetails String?
+  regularMedication            Boolean
+  regularMedicationDetails     String?
+  certifiedForWeek             Boolean?
+  validFrom                    DateTime
+  validTo                      DateTime?
+  symptomStartDate             DateTime
+  medicalReason                String
+  symptomsDetails              String
+  medicalCareSought            String
+  conditionStatus              ConditionStatus
+  workplace                    String
+  workActivities               String
+  priorityOption               PriorityOption
+  couponCode                   String?
+  amount                       Float
+  requestStatus                RequestStatus   @default(PENDING)
+  createdAt                    DateTime        @default(now())
+  updatedAt                    DateTime        @updatedAt
+
+  @@map("sickNoteRequest")
+}
+
+model EmployeeFitnessCertificate {
+  id                           String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                    String
+  lastName                     String?
+  email                        String
+  mobileNumber                 String
+  dateOfBirth                  DateTime
+  gender                       String
+  preExistingConditions        Boolean
+  preExistingConditionsDetails String?
+  medications                  Boolean
+  medicationsDetails           String?
+  walkingAbility               String
+  workExplanation              String
+  uploadFile                   Json?
+  workplace                    String
+  workActivities               String
+  priorityOption               PriorityOption
+  requestStatus                RequestStatus  @default(PENDING)
+  couponCode                   String?
+  amount                       Float
+  createdAt                    DateTime       @default(now())
+  updatedAt                    DateTime       @updatedAt
+
+  @@map("employeeFitnessCertificates")
+}
+
+model MitigationLetter {
+  id                    String           @id @default(auto()) @map("_id") @db.ObjectId
+  firstName             String
+  lastName              String?
+  email                 String
+  mobileNumber          String
+  dateOfBirth           DateTime
+  gender                String
+  mitigationReason      String
+  preExistingConditions Boolean?
+  takeMedications       Boolean
+  consultedGP           Boolean
+  gpConsultationDate    DateTime?
+  gpName                String?
+  description           String?
+  symptomsStartDate     DateTime
+  symptomsDetails       String
+  medicalCare           String
+  conditionStatus       ConditionStatus?
+  impactOnAssessment    String?
+  circumstance          String?
+  mitigationProposal    String?
+  validFrom             DateTime?
+  validTo               DateTime?
+  institutionName       String
+  courseName            String
+  additionalInfo        String?
+  priorityOption        PriorityOption
+  amount                Float
+  couponCode            String?
+  requestStatus         RequestStatus    @default(PENDING)
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  @@map("mitigationLetters")
+}
+
+model StudentSickLeaveRequest {
+  id                           String          @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                    String
+  lastName                     String?
+  email                        String
+  mobileNumber                 String
+  dateOfBirth                  DateTime
+  gender                       String
+  preExistingConditions        Boolean
+  preExistingConditionsDetails String?
+  medications                  Boolean
+  medicationsDetails           String?
+  symptomsStartDate            DateTime
+  medicalReason                String
+  symptomsDetails              String
+  medicalCare                  String
+  medicalCareDetails           String?
+  conditionStatus              ConditionStatus
+  validFrom                    DateTime?
+  validTo                      DateTime?
+  institutionName              String
+  priorityOption               PriorityOption
+  couponCode                   String?
+  amount                       Float
+  requestStatus                RequestStatus   @default(PENDING)
+  createdAt                    DateTime        @default(now())
+  updatedAt                    DateTime        @updatedAt
+
+  @@map("studentSickLeaveRequest")
+}
+
+model FitForFlightRequest {
+  id                         String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                  String
+  lastName                   String?
+  email                      String
+  mobileNumber               String
+  dateOfBirth                DateTime
+  gender                     String
+  pregnancyDueDate           DateTime
+  pregnancyComplications     Boolean
+  pregnancyConception        String
+  pregnancyConceptionDetails String?
+  anyExperience              Boolean
+  medicalConditions          String
+  adverseConditionsDuring    String
+  nonPregnencyDetails        String
+  currentPrescribe           Boolean
+  antenatalCareLocation      String
+  bmiAtStartOfPregnancy      String
+  bloodPressure              String
+  recentBloodPressureDate    String
+  outboundFlightDate         DateTime
+  airlineName                String
+  flightDuration             String
+  pregnancyWeeksAtFlight     Float
+  returnFlight               Boolean
+  returnFlightDate           DateTime?
+  priorityOption             PriorityOption
+  couponCode                 String?
+  amount                     Float
+  requestStatus              RequestStatus  @default(PENDING)
+  createdAt                  DateTime       @default(now())
+  updatedAt                  DateTime       @updatedAt
+
+  @@map("fitForFlightRequest")
+}
+
+model ChickenpoxCertificateRequest {
+  id                          String          @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                   String
+  lastName                    String?
+  email                       String
+  mobileNumber                String
+  dateOfBirth                 DateTime
+  gender                      String
+  preExistingCondition        Boolean
+  preExistingConditionDetails String?
+  regularMedications          Boolean
+  regularMedicationsDetails   String?
+  flightDate                  DateTime
+  arrivalLocation             String
+  symptomStartDate            DateTime
+  symptomsDetails             String
+  treatmentGP                 String?
+  treatmentGPDetails          String?
+  treatmentGPFile             Json?
+  conditionStatus             ConditionStatus
+  chickenpoxScabbed           Boolean
+  feverLast48Hours            Boolean
+  monkeypoxContact            Boolean
+  priorityOption              PriorityOption
+  couponCode                  String?
+  amount                      Float
+  requestStatus               RequestStatus   @default(PENDING)
+  createdAt                   DateTime        @default(now())
+  updatedAt                   DateTime        @updatedAt
+
+  @@map("chickenpoxCertificateRequest")
+}
+
+model BookConsultation {
+  id                        String        @id @default(auto()) @map("_id") @db.ObjectId
+  selectedDate              DateTime
+  selectedTime              String
+  firstName                 String
+  lastName                  String?
+  email                     String
+  mobileNumber              String
+  dateOfBirth               DateTime
+  gender                    String
+  address                   String?
+  nhsNumber                 String?
+  conditionSymtoms          String?
+  healthConcern             String?
+  symptomsStartDate         String?
+  symptomProgression        String?
+  symptomDetails            String?
+  symptomTriggers           String?
+  dailyLifeImpact           String?
+  specificConcerns          String?
+  needsSpecialist           Boolean?
+  needsSpecialistDetails    String?
+  specialistUrgency         String?
+  previousTreatment         Boolean
+  previousTreatmentDetails  String?
+  hasMedicalRecords         Boolean?
+  currentMedications        Boolean
+  currentMedicationsDetails String?
+  additionalMedicalInfo     String?
+  amount                    Float
+  requestStatus             RequestStatus @default(PENDING)
+  createdAt                 DateTime      @default(now())
+  updatedAt                 DateTime      @updatedAt
+
+  @@map("bookconsultations")
+}
+
+model VisaCertificate {
+  id                              String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                       String
+  lastName                        String?
+  email                           String
+  mobileNumber                    String
+  dateOfBirth                     DateTime
+  address                         String
+  gender                          String
+  visaPurpose                     String
+  visaCountry                     String
+  previouslyIssuedVisa            Boolean
+  previouslyIssuedVisaDetails     String?
+  medicalHistoryConditions        Boolean
+  medicalHistoryConditionsDetails String?
+  takingPrescription              Boolean
+  takingPrescriptionDetails       String?
+  contagiousDisease               Boolean?       @default(false)
+  vaccinationReceived             Boolean
+  vaccinationReceivedDetails      String?
+  recentExposure                  Boolean
+  recentExposureDetails           String?
+  travelHistory                   Boolean
+  travelHistoryDetails            String?
+  healthInsurance                 Boolean
+  healthInsuranceDetails          String?
+  additionalInfo                  String?
+  passportNumber                  String
+  passportUpload                  Json?
+  priorityOption                  PriorityOption
+  hardCopyRequested               String?
+  couponCode                      String?
+  amount                          Float
+  requestStatus                   RequestStatus  @default(PENDING)
+  createdAt                       DateTime       @default(now())
+  updatedAt                       DateTime       @updatedAt
+
+  @@map("visaCertificates")
+}
+
+model DisablityCertificateRequest {
+  id                            String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                     String
+  lastName                      String?
+  email                         String
+  mobileNumber                  String
+  dateOfBirth                   DateTime
+  gender                        String
+  disabilityDescription         String
+  disabilityTime                String
+  impactOnDailyLife             String
+  specificChallenges            String
+  previousMedicalHistory        Boolean
+  previousMedicalHistoryDetails String?
+  relevantMedicalRecords        Boolean
+  workOrEducationSupport        Boolean?
+  workOrEducationSupportDetails String?
+  currentMedications            Boolean
+  currentMedicationsDetails     String?
+  supportingInformation         String
+  consultedSpecialists          Boolean
+  consultedSpecialistsDetails   String?
+  additionalInformation         String?
+  priorityOption                PriorityOption
+  couponCode                    String?
+  amount                        Float
+  requestStatus                 RequestStatus  @default(PENDING)
+  createdAt                     DateTime       @default(now())
+  updatedAt                     DateTime       @updatedAt
+
+  @@map("disablityCertificateRequest")
+}
+
+model VaccineCertificateRequest {
+  id                             String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                      String
+  lastName                       String?
+  email                          String
+  mobileNumber                   String
+  dateOfBirth                    DateTime
+  gender                         String
+  severeAllergicReactions        Boolean
+  immuneDisorders                Boolean
+  adverseVaccineReactions        Boolean
+  adverseVaccineReactionsDetails String?
+  currentMedications             Boolean
+  specificVaccine                String
+  vaccineReceivedInPast          Boolean
+  vaccineReceivedInPastDetails   String?
+  healthConditions               Boolean
+  pregnant                       Boolean
+  breastfeeding                  Boolean
+  recentProcedures               Boolean
+  consultedSpecialist            Boolean
+  medicalDocumentsProvided       String
+  additionalInformation          String
+  priorityOption                 PriorityOption
+  couponCode                     String?
+  amount                         Float
+  requestStatus                  RequestStatus  @default(PENDING)
+  createdAt                      DateTime       @default(now())
+  updatedAt                      DateTime       @updatedAt
+
+  @@map("vaccineCertificateRequest")
+}
+
+model TravelMedicationLetterRequest {
+  id                          String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                   String
+  lastName                    String?
+  email                       String
+  mobileNumber                String
+  dateOfBirth                 DateTime
+  gender                      String
+  destination                 String?
+  travelDates                 DateTime
+  purposeOfTravel             String?
+  medicalCondition            Boolean
+  medicalConditionDetails     String
+  medicationList              String
+  medicationDetails           String
+  recentMedicalChanges        Boolean
+  recentMedicalChangesDetails String?
+  consultedGP                 Boolean
+  consultedGPDetails          String?
+  circumstancesDetails        String
+  travelRegulationsAwareness  Boolean
+  travelMedicationExplanation String?
+  allergiesOrConditions       Boolean
+  additionalInformation       String
+  priorityOption              PriorityOption
+  couponCode                  String?
+  amount                      Float
+  requestStatus               RequestStatus  @default(PENDING)
+  createdAt                   DateTime       @default(now())
+  updatedAt                   DateTime       @updatedAt
+
+  @@map("travelMedicationLetterRequest")
+}
+
+model GymCancellationCertificateRequest {
+  id                           String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                    String
+  lastName                     String?
+  email                        String
+  mobileNumber                 String
+  dateOfBirth                  DateTime
+  gender                       String
+  gymOrHealthClubName          String
+  membershipId                 String
+  dateOfJoining                DateTime
+  reasonForCancellation        String
+  medicalConditionAffectsUsage Boolean
+  injuriesOrHealthIssues       Boolean
+  injuriesOrHealthExplanation  String?
+  currentMedicalTreatment      Boolean
+  whyCancellation              String
+  includeFees                  Boolean
+  consultedGP                  Boolean
+  consultedGPDetails           String?
+  additionalInformation        String?
+  priorityOption               PriorityOption
+  couponCode                   String?
+  amount                       Float
+  requestStatus                RequestStatus  @default(PENDING)
+  createdAt                    DateTime       @default(now())
+  updatedAt                    DateTime       @updatedAt
+
+  @@map("gymCancellationCertificateRequest")
+}
+
+model EventActivityCancellationRequest {
+  id                    String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName             String
+  lastName              String?
+  email                 String
+  mobileNumber          String
+  dateOfBirth           DateTime
+  gender                String
+  eventName             String
+  eventDate             DateTime
+  eventLocation         String
+  cancellationReason    String
+  medicalCondition      Boolean
+  medicalDetails        String?
+  impactOnParticipation String?
+  consultedDoctor       Boolean
+  GPNameInfo            String?
+  doctorAssessment      Boolean
+  assessmentDetails     String?
+  additionalInfo        String?
+  priorityOption        PriorityOption
+  couponCode            String?
+  amount                Float
+  requestStatus         RequestStatus  @default(PENDING)
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  @@map("eventActivityCancellationRequest")
+}
+
+model InjuryAccidentConfirmationRequest {
+  id                    String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName             String
+  lastName              String?
+  email                 String
+  mobileNumber          String
+  dateOfBirth           DateTime
+  gender                String
+  incidentDate          String
+  incidentLocation      String
+  incidentDescription   String
+  medicalTreatment      Boolean
+  medicalTDetail        String?
+  medicalTests          String?
+  currentTreatment      Boolean
+  discussedWithGP       Boolean
+  GPAssessment          Boolean
+  confirmationReason    String
+  additionalInformation String?
+  specificDetails       String
+  allergies             Boolean
+  GPRelevant            String
+  priorityOption        PriorityOption
+  couponCode            String?
+  amount                Float
+  requestStatus         RequestStatus  @default(PENDING)
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  @@map("injuryAccidentConfirmationRequest")
+}
+
+model FitToCruiseRequest {
+  id                            String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                     String
+  lastName                      String?
+  email                         String
+  mobileNumber                  String
+  dateOfBirth                   DateTime
+  gender                        String
+  passportNumber                String
+  cruiseLineNameAndBooking      String
+  departureDate                 DateTime
+  itinerary                     String
+  preExistingMedicalConditions  Boolean
+  preExistingMedicalDetails     String?
+  currentlyTakingMedications    Boolean
+  currentlyTakingListThem       String?
+  previousCruiseExperience      Boolean
+  previousCruiseDetails         String?
+  allergies                     Boolean
+  allergySpecify                String?
+  recentIllnessOrSurgery        Boolean
+  recentIllnessOrSurgeryDetails String?
+  medicalConsultations          Boolean
+  medicalConsultationName       String?
+  physicalActivity              Boolean
+  motionSickness                Boolean
+  motionSicknessManage          String?
+  specialDietary                String
+  emergencyContacts             String
+  additionalInformation         String
+  passportUpload                String
+  priorityOption                PriorityOption
+  couponCode                    String?
+  amount                        Float
+  requestStatus                 RequestStatus  @default(PENDING)
+  createdAt                     DateTime       @default(now())
+  updatedAt                     DateTime       @updatedAt
+
+  @@map("fitToCruiseRequest")
+}
+
+model MedicalLetterBlueBadgeRequest {
+  id                    String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName             String
+  lastName              String?
+  email                 String
+  mobileNumber          String
+  dateOfBirth           DateTime
+  gender                String
+  blueBadge             Boolean
+  blueBadgeDetails      String?
+  applyBlueBadge        String
+  medicalDisability     String
+  medicalCondition      String
+  medicalDailyLife      String
+  medicalTreatments     String
+  difficultyWalking     Boolean
+  limitedMobility       Boolean
+  standing              Boolean
+  transportation        Boolean
+  medicalConditonImpact String
+  difficultiesFinding   String
+  performDaily          String
+  assistanceCaregiver   Boolean
+  careSpecialist        Boolean
+  specialistDevices     Boolean
+  additionalInfo        String
+  passportUpload        String
+  priorityOption        PriorityOption
+  couponCode            String?
+  amount                Float
+  requestStatus         RequestStatus  @default(PENDING)
+  createdAt             DateTime       @default(now())
+  updatedAt             DateTime       @updatedAt
+
+  @@map("medicalLetterBlueBadgeRequest")
+}
+
+model EmergencyCancellationRequest {
+  id                         String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                  String
+  lastName                   String?
+  email                      String
+  mobileNumber               String
+  dateOfBirth                DateTime
+  gender                     String
+  medicalPractitioner        Boolean
+  medicalPractitionerDetails String?
+  medicalCondition           String
+  medicalConditionDetails    String?
+  medicalConditionFile       String?
+  medicalRegularly           Boolean?
+  medicalRegularlyDetails    String?
+  mainReasonForCancellation  String
+  symptomsStartDate          DateTime
+  symptomsDescription        String
+  priorityOption             PriorityOption
+  couponCode                 String?
+  amount                     Float
+  requestStatus              RequestStatus  @default(PENDING)
+  createdAt                  DateTime       @default(now())
+  updatedAt                  DateTime       @updatedAt
+
+  @@map("emergencyCancellationRequest")
+}
+
+model AllergyCertificateRequest {
+  id                          String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                   String
+  lastName                    String?
+  email                       String
+  mobileNumber                String
+  dateOfBirth                 DateTime
+  gender                      String
+  allergies                   Boolean
+  allergiesDetails            String?
+  specificAllergies           String
+  circumstanceSymptoms        String?
+  severeReaction              Boolean
+  emergencyPrescribed         Boolean
+  emergencyDetails            String?
+  emergencyMedication         Boolean
+  emergencyReadily            String?
+  allergyImpact               String
+  allergyTreatment            Boolean
+  allergyTreatmentDetails     String?
+  previousTreatment           Boolean
+  previousTreatmentDetails    String?
+  currentMedication           Boolean
+  currentMedicationDetails    String?
+  currentAnyMedication        Boolean
+  currentAnyMedicationSpecify String?
+  travelFrequency             Boolean
+  travelFrequencyDetails      String?
+  additionalInfo              String
+  passportUpload              String?
+  priorityOption              PriorityOption
+  couponCode                  String?
+  amount                      Float
+  requestStatus               RequestStatus  @default(PENDING)
+  createdAt                   DateTime       @default(now())
+  updatedAt                   DateTime       @updatedAt
+
+  @@map("allergyCertificateRequest")
+}
+
+model SportsConsultationFitnessRequest {
+  id                              String         @id @default(auto()) @map("_id") @db.ObjectId
+  firstName                       String
+  lastName                        String?
+  email                           String
+  mobileNumber                    String
+  dateOfBirth                     DateTime
+  gender                          String
+  gpDetails                       Boolean
+  gpName                          String?
+  gpAddress                       String?
+  gpTelephone                     String?
+  gpEmail                         String?
+  gpConsulted                     Boolean
+  gpConsulteDetails               String?
+  height                          String
+  weight                          String
+  BodyMass                        String
+  lastBloodPressure               String?
+  bloodPressureTiming             String?
+  suffredBleedingDisorders        Boolean
+  suffredHighBloodPressure        Boolean
+  suffredPalpitations             Boolean
+  suffredStroke                   Boolean
+  suffredHeartAttack              Boolean
+  suffredAsthma                   Boolean
+  suffredBronchitis               Boolean
+  suffredChronicDisease           Boolean
+  suffredRheumatic                Boolean
+  suffredDiabetes                 Boolean
+  suffredEpilepsy                 Boolean
+  suffredThyroidDisease           Boolean
+  suffredHeatStroke               Boolean
+  suffredIntoxication             Boolean
+  medicalDisorder                 Boolean
+  medicalDisorderDetails          String?
+  historyHeartDisease             Boolean
+  historyHeartDiseaseDetails      String?
+  suddenCardiac                   Boolean
+  suddenCardiacDetails            String?
+  chestPains                      Boolean
+  chestPainsDetails               String?
+  breathlessness                  Boolean
+  breathlessnessDetails           String?
+  dizziness                       Boolean
+  dizzinessDetails                String?
+  dizzinessWhenExercising         Boolean
+  dizzinessWhenExercisingDetails  String?
+  palpitations                    Boolean
+  palpitationDetails              String?
+  consciousness                   Boolean
+  consciousnessDetails            String?
+  currentMedications              Boolean
+  currentMedicationDetail         String?
+  admittedHospital                Boolean
+  admittedHospitalDetails         String?
+  trainAdequate                   Boolean
+  cyclingRuningSwimming           String?
+  maximumheartRate                String
+  entranceevents                  Boolean
+  entranceeventDetails            String?
+  fainted                         Boolean
+  faintDetails                    String?
+  smoke                           String?
+  typicalWeek                     String?
+  medicalIssues                   Boolean?
+  medicalIssuesDetails            String?
+  performanceEnhancingDrugs       Boolean
+  performanceEnhancingDrugDetails String?
+  sportingPerformance             Boolean
+  sportingPerformanceDetails      String?
+  medicalInsurance                Boolean
+  medicalInsuranceDetails         String?
+  enteringOvernext12Months        String?
+  gpSupportingSpecific            String?
+  uploadScanned                   String?
+  optionUpload                    String?
+  priorityOption                  PriorityOption
+  couponCode                      String?
+  amount                          Float
+  requestStatus                   RequestStatus  @default(PENDING)
+  createdAt                       DateTime       @default(now())
+  updatedAt                       DateTime       @updatedAt
+
+  @@map("sportsConsultationFitnessRequest")
+}
+
+model WorkAdjustmentAssessmentRequest {
+  id                           String         @id @default(cuid()) @map("_id")
+  firstName                    String
+  lastName                     String
+  email                        String
+  mobileNumber                 String
+  dateOfBirth                  DateTime
+  gender                       String
+  reasonForAdjustment          String
+  otherReason                  String?
+  medicalCondition             Boolean
+  medicalConditionDetails      String
+  medication                   Boolean
+  medicationDetails            String?
+  physicalDemandsSitting       String
+  physicalDemandsWalking       String?
+  physicalDemandsStanding      String?
+  physicalDemandsBending       String?
+  physicalDemandsReaching      String?
+  physicalDemandsClimbing      String?
+  physicalDemandsliftingWeight String?
+  physicalDemandstemperatures  String?
+  mentalDemandsIndependently   String?
+  mentalDemandUnderPressure    String?
+  mentalDemandMeeting          String?
+  mentalDemandMultitasking     String?
+  mentalDemandConcentration    String?
+  mentalDemandDecision         String?
+  mentalDemandEmotional        String?
+  mentalDemandInteraction      String?
+  environmentalFactors         Boolean
+  environmentalDescription     String?
+  functionalLifting            String?
+  functionalSitting            String?
+  specificHours                String?
+  specificTasks                String?
+  specificTasksImpact          String?
+  workingIndependently         String?
+  interactingWithOthers        String?
+  meetingDeadlines             String?
+  jobDuties                    Boolean
+  jobDutiesDescription         String?
+  priorityOption               PriorityOption
+  couponCode                   String?
+  amount                       Float
+  requestStatus                RequestStatus  @default(PENDING)
+  createdAt                    DateTime       @default(now())
+  updatedAt                    DateTime       @updatedAt
+
+  @@map("workAdjustmentAssessmentRequest")
+}
+
+enum MedicalReason {
+  COLD_FLU
+  INFECTION
+  BACK_PAIN
+  ANXIETY_STRESS
+  OTHER
+}
+
+enum ConditionStatus {
+  ONGOING
+  PARTIALLY_RECOVERED
+  FULLY_RECOVERED
+}
+
+enum PriorityOption {
+  STANDARD_REQUEST
+  RECOMMENDED_EXPRESS
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REFUNDED
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  SPECIALIST
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+}
