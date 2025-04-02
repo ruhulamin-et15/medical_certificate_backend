@@ -6,17 +6,11 @@ import GlobalErrorHandler from "./app/middlewares/globalErrorHandler";
 import httpStatus from "http-status";
 import cookieParser from "cookie-parser";
 import path from "path";
-import { paymentController } from "./app/modules/Payment/payment.controller";
 
 const app: Application = express();
 
 export const corsOptions = {
-  origin: [
-    "http://mediconline.uk",
-    "https://medic-online.vercel.app",
-    "http://localhost:3001",
-    "https://mediconline.uk",
-  ],
+  origin: ["http://localhost:3001"],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -36,7 +30,7 @@ app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 app.get("/", (req: Request, res: Response) => {
   res.send({
     success: true,
-    Message: "Consultation Server is Running",
+    Message: "Medical Certificate Server is Running",
   });
 });
 
