@@ -70,14 +70,6 @@ npm run dev
 npm run dev
 ```
 
-## 🛡️ Environment Variables
-Create a `.env` file in the backend directory and add:
-```env
-MONGO_URI=your_mongo_db_connection_string
-JWT_SECRET=your_secret_key
-```
-
-
 ## 📞 Contact
 For any inquiries or support, please reach out to **ruhulamin.et15@gmail.com**.
 
