@@ -1,5 +1,5 @@
 {
-  "name": "rt1010p",
+  "name": "medical_certificate_backend",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
@@ -10,9 +10,9 @@
     "postinstall": "prisma generate"
   },
   "keywords": [],
-  "author": "",
+  "author": "Ruhul Amin",
   "license": "ISC",
-  "description": "",
+  "description": "medical_certificate_backend",
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.7",
